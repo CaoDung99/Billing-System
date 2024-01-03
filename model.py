@@ -1,14 +1,17 @@
 import io
 import os
 import random
-from view import BillingView
-from tkinter import messagebox
-from tkinter import END
 from tkinter import *
-import glob
-from io import StringIO
+from tkinter import messagebox
+
+from pydrive import drive
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
 class BillingModel:
+
     def calculate_total(self, billing_view_instance):
         global soapprice, facecreamprice, facewashprice, hairprayprice, hairgelpirece, bodylotionprice, riceprice, daalprice, oilprice, sugarprice, teaprice, wheatprice, maaprice, frootprice, dewprice, pepsiprice, spriteprice, cococolaprice
         global totalcosmeticprice, cosmetictax, totalgroceyprice, procerytax, totaldrinkprice, drinktax, totalbill
@@ -183,9 +186,67 @@ class BillingModel:
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi đọc hóa đơn: {str(e)}")
 
-                
-        
-       
+    def print_bill(self, billing_view_instance):
+        gauth = GoogleAuth()
+        gauth.LoadClientConfigFile(
+            'client_secret_897380105403-p0bm8hfp9eathveid42uitdllordb42r.apps.googleusercontent.com.json')
+        gauth.LocalWebserverAuth()
+        customer_txtarea = billing_view_instance.txtarea.get(1.0, 'end-1c')
+        if not customer_txtarea.strip():
+            messagebox.showerror('Lỗi', 'Không thể in hóa đơn')
+        else:
+            folder_name = 'print'
+            if not os.path.exists(folder_name):
+                os.mkdir(folder_name)
+
+            bill_id = random.randint(1000, 9999)
+            file_path = os.path.join(folder_name, f'{bill_id}.pdf')
+            try:
+                c = canvas.Canvas(file_path, pagesize=letter)
+                c.setFont("Helvetica", 12)
+                text = customer_txtarea.encode('latin-1', 'replace').decode('latin-1')
+                c.drawString(100, 750, text)
+                c.save()
+                messagebox.showinfo('Thành công',
+                                    f'Hóa đơn {bill_id} đã được lưu thành công dưới dạng tệp PDF trong thư mục "print".')
+
+                # Tải lên Google Drive
+                gauth.Authorize()
+                drive = GoogleDrive(gauth)
+                gfile = drive.CreateFile({'title': f'{bill_id}.pdf'})
+                gfile.SetContentFile(file_path)
+                gfile.Upload()
+                messagebox.showinfo('Thành công',
+                                    f'Hóa đơn {bill_id} đã được lưu và tải lên Google Drive thành công.')
+
+            except Exception as e:
+                messagebox.showerror("Lỗi", f"Lỗi khi lưu hóa đơn: {str(e)}")
+
+    def delete_bill(self, billing_view_instance):
+        search_id = billing_view_instance.c_bill_txt.get()
+
+        if not search_id:
+            messagebox.showerror("Lỗi", "Vui lòng nhập mã hóa đơn.")
+            return
+
+        file_path = f'bills/{search_id}.txt'
+
+        if not os.path.exists(file_path):
+            messagebox.showinfo("Thông báo", "Không tìm thấy hóa đơn.")
+            return
+
+        try:
+            os.remove(file_path)
+            messagebox.showinfo("Thông báo", "Hóa đơn đã được xóa thành công.")
+        except Exception as e:
+            messagebox.showerror("Lỗi", f"Lỗi khi xóa hóa đơn: {str(e)}")
+
+    def exit_app(self, billing_view_instance):
+        choice = messagebox.askquestion("Xác nhận", "Bạn có chắc chắn muốn thoát ứng dụng?")
+        if choice == 'yes':
+            # Thực hiện các thao tác cần thiết trước khi thoát ứng dụng (nếu có)
+            billing_view_instance.root.destroy()
+            
 
 
 

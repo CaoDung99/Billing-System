@@ -1,0 +1,17 @@
+	 Xin Chào Quý Khách
+
+ ID hóa đơn: 6029473
+
+ Tên khách hàng: ds
+
+ SĐT: asd
+
+===================================
+Sản Phẩm 		 Số lượng 		 giá
+===================================
+Lẩu Thái 		01 		 30 vnđ
+-------------------------------------------
+Thuế món khai vị  			 0.0 vnđ
+Thuế món chính 			 1.5 vnđ
+Thuế nước 			 0.0 vnđ
+Tổng Hóa Đơn: 			  30 vnđ

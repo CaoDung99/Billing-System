@@ -18,6 +18,17 @@ class BillingController:
 
     def search_bill(self):
         self.model.search_bill(self.view)
+
+    def print_bill(self):
+        self.model.print_bill(self.view)
+    def google_drive(self):
+        self.model.google_drive(self.view)
+
+    def delete_bill(self):
+        self.model.delete_bill(self.view)
+
+    def exit_app(self):
+        self.model.exit_app(self.view)
         
     def run(self):
         self.root.mainloop()

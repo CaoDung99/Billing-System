@@ -198,10 +198,11 @@ class BillingView:
         self.c3_txt.grid(row=2, column=3, padx=10, pady=1)       
         
         btn_F= Frame(F6, bd=7,relief=GROOVE)
-        btn_F.place(x=750, width=580, height=105)
+        btn_F.place(x=750, width=680, height=105)
         
         self.total_btn=Button(btn_F, text="Tổng", bg="cadetblue", fg="black", bd=2, pady=15, width=10, font="arial 11 bold", command= controller.total).grid(row=0, column=0, padx=5, pady=5)
         self.GBill_btn=Button(btn_F, text="Tạo Hóa đơn", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command= controller.txtarea).grid(row=0, column=1, padx=5, pady=5)
-        self.Clear_btn=Button(btn_F, text="Xóa", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold").grid(row=0, column=2, padx=5, pady=5)
-        self.email_btn=Button(btn_F, text="Email", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold").grid(row=0, column=3, padx=5, pady=5)
-        self.Exit_btn=Button(btn_F, text="Thoát", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold").grid(row=0, column=4, padx=5, pady=5)
+        self.Clear_btn=Button(btn_F, text="Xóa", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command=controller.delete_bill).grid(row=0, column=2, padx=5, pady=5)
+        self.Print_btn=Button(btn_F, text="In Hóa Đơn", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold",command=controller.print_bill).grid(row=0, column=3, padx=5, pady=5)
+        self.email_btn=Button(btn_F, text="Email", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold").grid(row=0, column=4, padx=5, pady=5)
+        self.Exit_btn=Button(btn_F, text="Thoát", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command=controller.exit_app).grid(row=0, column=5, padx=5, pady=5)

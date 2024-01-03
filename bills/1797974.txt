@@ -1,0 +1,19 @@
+	 Xin Chào Quý Khách
+
+ ID hóa đơn: 1797974
+
+ Tên khách hàng: asd
+
+ SĐT: asda
+
+===================================
+Sản Phẩm 		 Số lượng 		 giá
+===================================
+Gỏi cuốn 		01 		 20 vnđ
+Lẩu Sichuan 		01 		 100 vnđ
+Nước ngọt 		01 		 20 vnđ
+-------------------------------------------
+Thuế món khai vị  			 2.4 vnđ
+Thuế món chính 			 5.0 vnđ
+Thuế nước 			 1.6 vnđ
+Tổng Hóa Đơn: 			  140 vnđ
