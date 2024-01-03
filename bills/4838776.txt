@@ -1,6 +1,6 @@
 	 Xin Chào Quý Khách
 
- ID hóa đơn: 7003112
+ ID hóa đơn: 4838776
 
  Tên khách hàng: 1
 
@@ -10,9 +10,10 @@
 Sản Phẩm 		 Số lượng 		 giá
 ===================================
 Gỏi cuốn 		01 		 20 vnđ
-Cá sốt me 		01 		 50 vnđ
+Lẩu Thái 		01 		 30 vnđ
+Nước ép trái cây 		01 		 50 vnđ
 -------------------------------------------
-Thuế món khai vị  			 8.4 vnđ
-Thuế món chính 			 0.0 vnđ
-Thuế nước 			 0.0 vnđ
-Tổng Hóa Đơn: 			  70 vnđ
+Thuế món khai vị  			 2.4 vnđ
+Thuế món chính 			 1.5 vnđ
+Thuế nước 			 4.0 vnđ
+Tổng Hóa Đơn: 			  100 vnđ
