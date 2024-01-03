@@ -204,5 +204,8 @@ class BillingView:
         self.GBill_btn=Button(btn_F, text="Tạo Hóa đơn", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command= controller.txtarea).grid(row=0, column=1, padx=5, pady=5)
         self.Clear_btn=Button(btn_F, text="Xóa", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command=controller.delete_bill).grid(row=0, column=2, padx=5, pady=5)
         self.Print_btn=Button(btn_F, text="In Hóa Đơn", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold",command=controller.print_bill).grid(row=0, column=3, padx=5, pady=5)
-        self.email_btn=Button(btn_F, text="Email", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold").grid(row=0, column=4, padx=5, pady=5)
+        self.email_btn=Button(btn_F, text="Email", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command=controller.email_bill).grid(row=0, column=4, padx=5, pady=5)
         self.Exit_btn=Button(btn_F, text="Thoát", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command=controller.exit_app).grid(row=0, column=5, padx=5, pady=5)
+        
+        
+        
