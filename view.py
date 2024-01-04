@@ -1,11 +1,14 @@
 from tkinter import *
 
+
 class BillingView:
     def __init__(self, root, controller):
         self.root = root
         self.root.geometry("1450x700+0+0")
+        icon_path = "./on2.ico"
+        self.root.iconbitmap(icon_path)
         self.root.title("Billing Software")
-        bg_color = "#fffe54"
+        bg_color = "#B8E1FF"
         title = Label(self.root, text="Phần mềm thanh toán", bd=12, relief=GROOVE, bg=bg_color, fg="Black", font=("times new roman", 30, "bold"), pady=2).pack(fill=X)
 
         #============= Khung chi tiết khách hàng

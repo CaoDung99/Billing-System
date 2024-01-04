@@ -1,9 +1,10 @@
 import io
 import os
 import random
+import smtplib
 from tkinter import *
-
-
+from tkinter import messagebox
+import re
 from pydrive import drive
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -16,75 +17,71 @@ class BillingModel:
         try:
             global soapprice, facecreamprice, facewashprice, hairprayprice, hairgelpirece, bodylotionprice, riceprice, daalprice, oilprice, sugarprice, teaprice, wheatprice, maaprice, frootprice, dewprice, pepsiprice, spriteprice, cococolaprice
             global totalcosmeticprice, cosmetictax, totalgroceyprice, procerytax, totaldrinkprice, drinktax, totalbill
-            soapprice = int(billing_view_instance.bath_txt.get()) *20
-            facecreamprice = int(billing_view_instance.face_cream_txt.get()) *50
-            facewashprice = int(billing_view_instance.face_w_txt.get()) *100
-            hairprayprice = int(billing_view_instance.Hair_s_txt.get()) *150
-            hairgelpirece = int(billing_view_instance.hair_g_txt.get()) *180
-            bodylotionprice = int(billing_view_instance.body_txt.get()) *60
-        
-        
+            soapprice = int(billing_view_instance.bath_txt.get()) * 20
+            facecreamprice = int(billing_view_instance.face_cream_txt.get()) * 50
+            facewashprice = int(billing_view_instance.face_w_txt.get()) * 100
+            hairprayprice = int(billing_view_instance.Hair_s_txt.get()) * 150
+            hairgelpirece = int(billing_view_instance.hair_g_txt.get()) * 180
+            bodylotionprice = int(billing_view_instance.body_txt.get()) * 60
+
             totalcosmeticprice = soapprice + facecreamprice + facewashprice + hairprayprice + hairgelpirece + bodylotionprice
-            billing_view_instance.m1_txt.delete(0,END)
+            billing_view_instance.m1_txt.delete(0, END)
             billing_view_instance.m1_txt.insert(0, f'{totalcosmeticprice} vnđ')
 
-
-            cosmetictax = totalcosmeticprice*0.12
+            cosmetictax = totalcosmeticprice * 0.12
             billing_view_instance.c1_txt.delete(0, END)
-            billing_view_instance.c1_txt.insert(0,str(cosmetictax) + 'vnđ')  
-        
+            billing_view_instance.c1_txt.insert(0, str(cosmetictax) + 'vnđ')
 
+            riceprice = int(billing_view_instance.g1_txt.get()) * 30
+            daalprice = int(billing_view_instance.g2_txt.get()) * 100
+            oilprice = int(billing_view_instance.g3_txt.get()) * 120
+            sugarprice = int(billing_view_instance.g4_s_txt.get()) * 50
+            teaprice = int(billing_view_instance.g5_txt.get()) * 140
+            wheatprice = int(billing_view_instance.g6_txt.get()) * 80
 
-            riceprice = int(billing_view_instance.g1_txt.get()) *30
-            daalprice = int(billing_view_instance.g2_txt.get()) *100
-            oilprice = int(billing_view_instance.g3_txt.get()) *120
-            sugarprice = int(billing_view_instance.g4_s_txt.get()) *50
-            teaprice = int(billing_view_instance.g5_txt.get()) *140
-            wheatprice = int(billing_view_instance.g6_txt.get()) *80
-        
-        
             totalgroceyprice = riceprice + daalprice + oilprice + sugarprice + teaprice + wheatprice
-            billing_view_instance.m2_txt.delete(0,END)
-            billing_view_instance.m2_txt.insert(0,f'{totalgroceyprice} vnđ')  
+            billing_view_instance.m2_txt.delete(0, END)
+            billing_view_instance.m2_txt.insert(0, f'{totalgroceyprice} vnđ')
 
-
-            procerytax = totalgroceyprice*0.05
+            procerytax = totalgroceyprice * 0.05
             billing_view_instance.c2_txt.delete(0, END)
-            billing_view_instance.c2_txt.insert(0,str(procerytax) + 'vnđ')  
+            billing_view_instance.c2_txt.insert(0, str(procerytax) + 'vnđ')
 
+            maaprice = int(billing_view_instance.n1_txt.get()) * 50
+            frootprice = int(billing_view_instance.n2_txt.get()) * 20
+            dewprice = int(billing_view_instance.n3_txt.get()) * 30
+            pepsiprice = int(billing_view_instance.n4_s_txt.get()) * 20
+            spriteprice = int(billing_view_instance.n5_txt.get()) * 45
+            cococolaprice = int(billing_view_instance.n6_txt.get()) * 90
 
-            maaprice = int(billing_view_instance.n1_txt.get()) *50
-            frootprice = int(billing_view_instance.n2_txt.get()) *20
-            dewprice = int(billing_view_instance.n3_txt.get()) *30
-            pepsiprice = int(billing_view_instance.n4_s_txt.get()) *20
-            spriteprice = int(billing_view_instance.n5_txt.get()) *45
-            cococolaprice = int(billing_view_instance.n6_txt.get()) *90
-        
-        
             totaldrinkprice = maaprice + frootprice + dewprice + pepsiprice + spriteprice + cococolaprice
-            billing_view_instance.m3_txt.delete(0,END)
+            billing_view_instance.m3_txt.delete(0, END)
             billing_view_instance.m3_txt.insert(0, f'{totaldrinkprice} vnđ')
 
-            drinktax = totaldrinkprice*0.08
+            drinktax = totaldrinkprice * 0.08
             billing_view_instance.c3_txt.delete(0, END)
-            billing_view_instance.c3_txt.insert(0,str(drinktax) + 'vnđ')
+            billing_view_instance.c3_txt.insert(0, str(drinktax) + 'vnđ')
+
+            if not hasattr(self, "is_first_calculation"):
+                    self.is_first_calculation = True
+
+            # Tính tổng hóa đơn
+            totalbill = totalcosmeticprice + totalgroceyprice + totaldrinkprice
+
+            # Kiểm tra nếu totalbill là số
+            if isinstance(totalbill, (int, float)):
+                # Hiển thị thông báo tính toán thành công
+                if self.is_first_calculation:
+                    messagebox.showinfo("Thành công", "Tính toán thành công. Tổng hóa đơn là: " + str(totalbill))
+                    self.is_first_calculation = False
+            else:
+                # Xóa giá trị totalbill và yêu cầu nhập lại
+                totalbill = 0
+                messagebox.showerror("Lỗi", "Tổng hóa đơn không hợp lệ. Vui lòng nhập lại.")
         except ValueError:
             # Xử lý lỗi nếu giá trị nhập vào không phải là số hợp lệ
             messagebox.showerror("Lỗi", "Giá trị không hợp lệ. Vui lòng nhập lại.")
-
-        # Tính tổng hóa đơn
-        totalbill = totalcosmeticprice + totalgroceyprice + totaldrinkprice
-
-        # Kiểm tra nếu totalbill là số
-        if isinstance(totalbill, (int, float)):
-            # Hiển thị thông báo tính toán thành công
-            messagebox.showinfo("Thành công", "Tính toán thành công. Tổng hóa đơn là: " + str(totalbill))
-        else:
-            # Xóa giá trị totalbill và yêu cầu nhập lại
-            totalbill = 0
-            messagebox.showerror("Lỗi", "Tổng hóa đơn không hợp lệ. Vui lòng nhập lại.")
             
-    
     def bill_area(self, billing_view_instance):
         global customer_name, customer_phone, customer_m1, customer_m2, customer_m3, customer_txtarea, bill_id
         customer_name = billing_view_instance.cname_txt.get()
@@ -93,13 +90,8 @@ class BillingModel:
         customer_m2 = billing_view_instance.m2_txt.get()
         customer_m3 = billing_view_instance.m3_txt.get()
         
-        if customer_name == '' or customer_phone == '':
-            # Hiển thị thông báo lỗi nếu tên hoặc số điện thoại khách hàng rỗng
-            messagebox.showerror("Lỗi", "Vui lòng nhập tên và số điện thoại khách hàng.")
-        elif customer_m1 == '' and customer_m2 == '' and customer_m3 == '':
-            messagebox.showerror("Lỗi", "Không có sản phẩm nào được chọn.")
-        elif customer_m1 == '0 vnđ' and customer_m2 == '0 vnđ' and customer_m3 == '0 vnđ':
-            messagebox.showerror("Lỗi", "Không có sản phẩm nào được chọn.")
+        
+            
         bill_id = str(random.randint(1000000, 9999999))
 
         customer_txtarea = billing_view_instance.txtarea
@@ -162,22 +154,31 @@ class BillingModel:
         customer_txtarea.insert(END, f'\nTổng Hóa Đơn: \t\t\t  {totalbill} vnđ')
 
         
-        result = messagebox.askyesno('Xác nhận', 'Bạn có muốn lưu hóa đơn không?')
-        if result:
-            bill_content = customer_txtarea.get(1.0, END)
-            if not customer_name or not customer_phone or not bill_id:
-                messagebox.showerror('Lỗi', 'Vui lòng nhập đầy đủ thông tin khách hàng và mã hóa đơn.')
-            if not os.path.exists('bills'):
-                os.mkdir('bills')
-            else:
-                file_path = f'bills/{bill_id}.txt'
-                try:
-                    with io.open(file_path, "w", encoding="utf-8") as file:
-                        file.write(bill_content)
-                        messagebox.showinfo('Thành công', f'{bill_id} đã được lưu thành công.')
-                except Exception as e:
-                    messagebox.showerror("Lỗi", f"Lỗi khi lưu hóa đơn: {str(e)}")
-
+        if customer_name == '' or customer_phone == '':
+            messagebox.showerror("Lỗi", "Vui lòng nhập tên và số điện thoại khách hàng.")
+        elif customer_m1 == '' and customer_m2 == '' and customer_m3 == '':
+            messagebox.showerror("Lỗi", "Không có sản phẩm nào được chọn.")
+        elif customer_m1 == '0 vnđ' and customer_m2 == '0 vnđ' and customer_m3 == '0 vnđ':
+            messagebox.showerror("Lỗi", "Không có sản phẩm nào được chọn.")
+        elif not re.match(r'^\d{10}$', customer_phone):
+            messagebox.showerror("Lỗi", "Số điện thoại phải chứa đúng 10 chữ số.")
+        else:
+            result = messagebox.askyesno('Xác nhận', 'Bạn có muốn lưu hóa đơn không?')
+            if result:
+                bill_content = customer_txtarea.get(1.0, END)
+                if not customer_name or not customer_phone or not bill_id or not re.match(r'^\d{10}$', customer_phone):
+                    messagebox.showerror('Lỗi', 'Vui lòng nhập đầy đủ và chính xác thông tin khách hàng và mã hóa đơn.')
+                else:
+                    if not os.path.exists('bills'):
+                        os.mkdir('bills')
+                    else:
+                        file_path = f'bills/{bill_id}.txt'
+                        try:
+                            with io.open(file_path, "w", encoding="utf-8") as file:
+                                file.write(bill_content)
+                                messagebox.showinfo('Thành công', f'{bill_id} đã được lưu thành công.')
+                        except Exception as e:
+                            messagebox.showerror("Lỗi", f"Lỗi khi lưu hóa đơn: {str(e)}")
 
     def search_bill(self, billing_view_instance):
         search_id = billing_view_instance.c_bill_txt.get()
@@ -265,9 +266,27 @@ class BillingModel:
 
 
     def email_bill(self, billing_view_instance):
+        def email_bill():
+            try:
+                ob = smtplib.SMTP('smtp.gmail.com', 587)
+                ob.starttls()
+                ob.login(gmail_Entry.get(), pass_Entry.get())
+                message = mess_texttarea.get(1.0, END).encode('utf-8')
+                ob.sendmail(gmail_Entry.get(), reciever_Entry.get(), message)
+                ob.quit()
+                messagebox.showinfo("Thông báo", "Hóa đơn đã được gửi thành công.")
+            except Exception as e:
+                print(str(e))
+                messagebox.showerror("Lỗi", "Hóa đơn đã được gửi thất bại.")
+            
+            
+        if customer_txtarea.get(1.0, END) == '\n':
+            messagebox.showerror("Lỗi", "Bill không có thông tin")
         label_frame = LabelFrame(billing_view_instance.root, text="Email Bill", bd=10, relief="groove")
         label_frame.place(x=380, y=80, width=550, height=600)
-
+        
+        label_frame.grab_set()
+        
 
         senderFrame = LabelFrame(label_frame, text="Người gửi", bd=10, relief="groove")
         senderFrame.place(x=0, y=5, width=525, height=150)
@@ -277,13 +296,17 @@ class BillingModel:
         
         gmail_Entry = Entry(senderFrame,width=20, font="arial 15", bd=7, relief=SUNKEN)
         gmail_Entry.grid(row=0, column=1, padx=5, pady=10)
+        gmail_Entry.insert(0, "caotrandung99@gmail.com")
+        gmail_Entry.config(state='disabled')
+        
         
         pass_Label = Label(senderFrame,text="Mật khẩu       ", fg="black", font=("times new roman", 12, "bold"))
         pass_Label.grid(row=1, column=0, padx=20, pady=5)
         
-        pass_Entry = Entry(senderFrame,width=20, font="arial 15", bd=7, relief=SUNKEN)
+        pass_Entry = Entry(senderFrame,width=20, font="arial 15", bd=7, relief=SUNKEN, show='*')
         pass_Entry.grid(row=1, column=1, padx=5, pady=10)
-        
+        pass_Entry.insert(0, "ksdlkwmvavvbvhoy")
+        pass_Entry.config(state='disabled')
         
         recipientFrame = LabelFrame(label_frame, text="Người nhận", bd=10, relief="groove")
         recipientFrame.place(x=0, y=160, width=525, height=360)
@@ -305,9 +328,22 @@ class BillingModel:
         scrol_y.grid(row=3, column=4, sticky="ns")
         mess_texttarea.configure(yscrollcommand=scrol_y.set)
         
-        send_btn=Button(label_frame, text="GỬi", bg="gray", fg="black",bd=2, pady=5, width=10, font="arial 11 bold").grid(row=4, column=0, padx=5, pady=5, sticky="e")
-        exit_btn=Button(label_frame, text="Thoát", bg="gray", fg="black",bd=2, pady=5, width=10, font="arial 11 bold").grid(row=4, column=1, padx=5, pady=5, sticky="w")
+        mess_texttarea.delete(1.0, END)
+        mess_texttarea.insert(END, customer_txtarea.get(1.0,END).replace('=', '').replace('-', ''))
+        
+        
+        send_btn=Button(label_frame, text="GỬi" , fg="black",bd=5, pady=5, width=10, font="arial 11 bold", command=email_bill).grid(row=4, column=0, padx=5, pady=5, sticky="e")
+        
+       
+        def exit_application():
+            label_frame.destroy()
+        
+        exit_btn=Button(label_frame, text="Thoát", fg="black",bd=5, pady=5, width=10, font="arial 11 bold", command=exit_application).grid(row=4, column=1, padx=5, pady=5, sticky="w")
      
+    
         label_frame.grid_columnconfigure(0, weight=1)
         label_frame.grid_columnconfigure(1, weight=1)
         label_frame.grid_rowconfigure(3, weight=1)
+        
+
+     
