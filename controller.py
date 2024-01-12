@@ -1,4 +1,3 @@
-
 from model import BillingModel
 from view import BillingView
 from tkinter import *
@@ -11,8 +10,6 @@ class BillingController:
 
     def total(self):
         self.model.calculate_total(self.view)
-        
-
     def txtarea(self):
         self.model.bill_area(self.view)
 
@@ -22,7 +19,6 @@ class BillingController:
     def email_bill(self):
         self.model.email_bill(self.view)
 
-
     def print_bill(self):
         self.model.print_bill(self.view)
 
@@ -31,7 +27,8 @@ class BillingController:
 
     def exit_app(self):
         self.model.exit_app(self.view)
-        
+
+
     def run(self):
         self.root.mainloop()
 

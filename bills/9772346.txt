@@ -1,0 +1,19 @@
+	 Xin Chào Quý Khách
+
+ ID hóa đơn: 9772346
+
+ Tên khách hàng: Cao Dũng
+
+ SĐT: 0123456789
+
+===================================
+Sản Phẩm 		 Số lượng 		 giá
+===================================
+Gỏi cuốn 		01 		 20 vnđ
+Lẩu Thái 		01 		 30 vnđ
+Rượu 		01 		 20 vnđ
+-------------------------------------------
+Thuế món khai vị  			 2.4 vnđ
+Thuế món chính 			 1.5 vnđ
+Thuế nước 			 1.6 vnđ
+Tổng Hóa Đơn: 			  70 vnđ
