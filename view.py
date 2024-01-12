@@ -1,5 +1,7 @@
 from tkinter import *
-
+from datetime import datetime
+import pytz
+import tkinter as tk
 
 class BillingView:
     def __init__(self, root, controller):
@@ -9,7 +11,23 @@ class BillingView:
         self.root.iconbitmap(icon_path)
         self.root.title("Billing Software")
         bg_color = "#B8E1FF"
-        title = Label(self.root, text="Phần mềm thanh toán", bd=12, relief=GROOVE, bg=bg_color, fg="Black", font=("times new roman", 30, "bold"), pady=2).pack(fill=X)
+
+        # Tạo label frame và đặt vị trí
+        F0 = LabelFrame(self.root, bd=12, relief=GROOVE, font=("times new roman", 40, "bold"), fg="Black", bg=bg_color,
+                        pady=2)
+        F0.place(x=0, y=0, relwidth=1)
+
+        # Tạo label "Phần mềm thanh toán" và căn giữa
+        self.title_lbl = Label(F0, text="Phần mềm thanh toán", bg=bg_color, fg="Black",
+                               font=("times new roman", 18, "bold"))
+        self.title_lbl.grid(row=0, column=0, padx=20, pady=5, columnspan=3)
+
+        self.time_txt = Entry(F0, width=20, font="arial 15", bd=7, relief=SUNKEN)
+        self.time_txt.grid(row=0, column=3, padx=5, pady=10)
+        self.time_txt.config(state='disabled')
+
+        self.controller = controller
+        self.update_time()
 
         #============= Khung chi tiết khách hàng
         F1 = LabelFrame(self.root, text="Chi tiết khách hàng", bd=7, relief=GROOVE, font=("times new roman", 15, "bold"), fg="Black",bg=bg_color)
@@ -33,7 +51,7 @@ class BillingView:
         self.bill_btn = Button(F1,text="Tìm kiếm", width=10, bd=9,  font=("arial 12 bold"), command= controller.search_bill)
         self.bill_btn.grid(row=0, column=6, padx=10, pady=10)
         
-        #============= Khung chi tiết mỹ phẩm
+        #============= Khung chi tiết Món khai vị
         F2 = LabelFrame(self.root, text="Món khai vị", bd=7, relief=GROOVE, font=("times new roman", 15, "bold"), fg="Black",bg=bg_color)
         F2.place(x=0,y=185,width=325, height=380)
 
@@ -75,7 +93,7 @@ class BillingView:
         self.body_txt.insert(0,0)
         self.body_txt.grid(row=5, column=1, padx=10, pady=10)
 
-        #============= Khung chi tiết tạp hóa
+        #============= Khung chi tiết Món Lẩu
         F3 = LabelFrame(self.root, text="Lẩu", bd=7, relief=GROOVE, font=("times new roman", 15, "bold"), fg="Black",bg=bg_color)
         F3.place(x=339,y=185,width=325, height=380)
 
@@ -115,7 +133,7 @@ class BillingView:
         self.g6_txt.insert(0,0)
         self.g6_txt.grid(row=5, column=1, padx=10, pady=10)
 
-        #============= Khung chi tiết nuoc
+        #============= Khung chi tiết Món Nước Uống
         F4 = LabelFrame(self.root, text="Nước Uống", bd=7, relief=GROOVE, font=("times new roman", 15, "bold"), fg="Black",bg=bg_color)
         F4.place(x=678,y=185,width=325, height=380)
 
@@ -155,7 +173,7 @@ class BillingView:
         self.n6_txt.insert(0,0)
         self.n6_txt.grid(row=5, column=1, padx=10, pady=10)
 
-        #============= Khung chi tiết tạp hóa
+        #============= Khung chi Hóa đơn
         F5 = LabelFrame(self.root,bd=10, relief=GROOVE)
         F5.place(x=1017,y=185,width=430, height=380)
         bill_title = Label(F5, text="Hóa Đơn", font="arial 15 bold", bd=7, relief=GROOVE).pack(fill=X)
@@ -169,17 +187,17 @@ class BillingView:
         F6 = LabelFrame(self.root, text="Menu hóa đơn", bd=7, relief=GROOVE, font=("times new roman", 15, "bold"), fg="Black",bg=bg_color)
         F6.place(x=0,y=560,relwidth=1, height=140)
 
-        self.m1=Label(F6,text="Tổng giá mỹ phẩm",bg=bg_color, fg="Black",font=("times new roman", 15, "bold"))
+        self.m1=Label(F6,text="Tổng giá Khai Vị",bg=bg_color, fg="Black",font=("times new roman", 15, "bold"))
         self.m1.grid(row= 0, column=0, padx=20, pady=1, sticky="w")
         self.m1_txt = Entry(F6, width=18, font="arial 10 bold", bd=7, relief=SUNKEN)
         self.m1_txt.grid(row=0, column=1, padx=10, pady=1)       
         
-        self.m2=Label(F6,text="Tổng giá tạp hóa",bg=bg_color, fg="Black",font=("times new roman", 15, "bold"))
+        self.m2=Label(F6,text="Tổng giá Lẩu",bg=bg_color, fg="Black",font=("times new roman", 15, "bold"))
         self.m2.grid(row= 1, column=0, padx=20, pady=1, sticky="w")
         self.m2_txt = Entry(F6, width=18, font="arial 10 bold", bd=7, relief=SUNKEN)
         self.m2_txt.grid(row=1, column=1, padx=10, pady=1)       
         
-        self.m3=Label(F6,text="Tổng giá nước",bg=bg_color, fg="Black",font=("times new roman", 15, "bold"))
+        self.m3=Label(F6,text="Tổng giá Nước",bg=bg_color, fg="Black",font=("times new roman", 15, "bold"))
         self.m3.grid(row= 2, column=0, padx=20, pady=1, sticky="w")
         self.m3_txt = Entry(F6, width=18, font="arial 10 bold", bd=7, relief=SUNKEN)
         self.m3_txt.grid(row=2, column=1, padx=10, pady=1)  
@@ -209,6 +227,13 @@ class BillingView:
         self.Print_btn=Button(btn_F, text="In Hóa Đơn", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold",command=controller.print_bill).grid(row=0, column=3, padx=5, pady=5)
         self.email_btn=Button(btn_F, text="Email", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command=controller.email_bill).grid(row=0, column=4, padx=5, pady=5)
         self.Exit_btn=Button(btn_F, text="Thoát", bg="cadetblue", fg="black",bd=2, pady=15, width=10, font="arial 11 bold", command=controller.exit_app).grid(row=0, column=5, padx=5, pady=5)
-        
-        
-        
+
+
+    def update_time(self):
+        vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
+        current_time = datetime.now(tz=vn_timezone).strftime("%H:%M:%S %d/%m/%Y")
+        self.time_txt.config(state='normal')
+        self.time_txt.delete(0, tk.END)
+        self.time_txt.insert(0, current_time)
+        self.time_txt.config(state='disabled')
+        self.root.after(1000, self.update_time)

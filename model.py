@@ -5,11 +5,13 @@ import smtplib
 from tkinter import *
 from tkinter import messagebox
 import re
-from pydrive import drive
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+from datetime import datetime
+import pytz
+import time
 
 class BillingModel:
 
@@ -83,13 +85,13 @@ class BillingModel:
             messagebox.showerror("Lỗi", "Giá trị không hợp lệ. Vui lòng nhập lại.")
             
     def bill_area(self, billing_view_instance):
-        global customer_name, customer_phone, customer_m1, customer_m2, customer_m3, customer_txtarea, bill_id
+        global customer_name, customer_phone, customer_m1, customer_m2, customer_m3, customer_txtarea, bill_id, customer_time
         customer_name = billing_view_instance.cname_txt.get()
         customer_phone = billing_view_instance.cphn_txt.get()
         customer_m1 = billing_view_instance.m1_txt.get()
         customer_m2 = billing_view_instance.m2_txt.get()
         customer_m3 = billing_view_instance.m3_txt.get()
-        
+        customer_time = billing_view_instance.time_txt.get()
         
             
         bill_id = str(random.randint(1000000, 9999999))
@@ -100,9 +102,10 @@ class BillingModel:
         customer_txtarea.insert(END, f'\n ID hóa đơn: {bill_id}\n')
         customer_txtarea.insert(END, f'\n Tên khách hàng: {customer_name}\n')
         customer_txtarea.insert(END, f'\n SĐT: {customer_phone}\n')
-        customer_txtarea.insert(END, '\n===================================')
+        customer_txtarea.insert(END, f'\n Thời Gian: {customer_time}\n')
+        customer_txtarea.insert(END, '\n================================================')
         customer_txtarea.insert(END, '\nSản Phẩm \t\t Số lượng \t\t giá')
-        customer_txtarea.insert(END, '\n===================================')
+        customer_txtarea.insert(END, '\n================================================')
         if billing_view_instance.bath_txt.get()!='0':
             customer_txtarea.insert(END, f'\nGỏi cuốn \t\t{billing_view_instance.bath_txt.get()} \t\t {soapprice} vnđ')
         if billing_view_instance.face_cream_txt.get()!='0':
@@ -143,7 +146,8 @@ class BillingModel:
         if billing_view_instance.n6_txt.get()!='0':
             customer_txtarea.insert(END, f'\nNước Suối \t\t{billing_view_instance.n6_txt.get()} \t\t {cococolaprice} vnđ')
 
-        customer_txtarea.insert(END, '\n-------------------------------------------')
+        customer_txtarea.insert(END, '\n------------------------------------------------')
+
         if billing_view_instance.c1_txt.get()!='0':
             customer_txtarea.insert(END, f'\nThuế món khai vị  \t\t\t {cosmetictax} vnđ')
         if billing_view_instance.c2_txt.get()!='0':
@@ -198,6 +202,7 @@ class BillingModel:
                 content = file.read()
                 billing_view_instance.txtarea.delete(1.0, END)
                 billing_view_instance.txtarea.insert(END, content)
+                self.found_bill = content  # Lưu trữ giá trị hóa đơn đã tìm thấy
         except Exception as e:
             messagebox.showerror("Lỗi", f"Lỗi khi đọc hóa đơn: {str(e)}")
 
@@ -280,8 +285,7 @@ class BillingModel:
                 messagebox.showerror("Lỗi", "Hóa đơn đã được gửi thất bại.")
             
             
-        if customer_txtarea.get(1.0, END) == '\n':
-            messagebox.showerror("Lỗi", "Bill không có thông tin")
+
         label_frame = LabelFrame(billing_view_instance.root, text="Email Bill", bd=10, relief="groove")
         label_frame.place(x=380, y=80, width=550, height=600)
         
@@ -327,9 +331,12 @@ class BillingModel:
         scrol_y = Scrollbar(recipientFrame, orient="vertical", command=mess_texttarea.yview)
         scrol_y.grid(row=3, column=4, sticky="ns")
         mess_texttarea.configure(yscrollcommand=scrol_y.set)
-        
-        mess_texttarea.delete(1.0, END)
-        mess_texttarea.insert(END, customer_txtarea.get(1.0,END).replace('=', '').replace('-', ''))
+
+        if billing_view_instance.txtarea.get(1.0, END) != '\n':
+            mess_texttarea.delete(1.0, END)
+            mess_texttarea.insert(END, billing_view_instance.txtarea.get(1.0, END).replace('=', '').replace('-', ''))
+        else:
+            messagebox.showerror("Lỗi", "Hóa đơn không có thông tin.")
         
         
         send_btn=Button(label_frame, text="GỬi" , fg="black",bd=5, pady=5, width=10, font="arial 11 bold", command=email_bill).grid(row=4, column=0, padx=5, pady=5, sticky="e")
@@ -344,6 +351,4 @@ class BillingModel:
         label_frame.grid_columnconfigure(0, weight=1)
         label_frame.grid_columnconfigure(1, weight=1)
         label_frame.grid_rowconfigure(3, weight=1)
-        
 
-     
