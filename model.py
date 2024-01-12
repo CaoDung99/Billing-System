@@ -5,7 +5,6 @@ import smtplib
 from tkinter import *
 from tkinter import messagebox
 import re
-from pydrive import drive
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from pydrive.auth import GoogleAuth
