@@ -240,7 +240,7 @@ class BillingModel:
                                     f'Hóa đơn {bill_id} đã được lưu và tải lên Google Drive thành công.')
 
             except Exception as e:
-                messagebox.showerror("Lỗi", f"Lỗi khi lưu hóa đơn: {str(e)}")
+                messagebox.showinfo("Lỗi", f"Lỗi khi lưu hóa đơn: {str(e)}")
 
     def delete_bill(self, billing_view_instance):
         search_id = billing_view_instance.c_bill_txt.get()
